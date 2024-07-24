@@ -1,6 +1,8 @@
 package com.janwojnar.nameageapp.validator;
 
 import com.janwojnar.nameageapp.common.SortTyp;
+import com.janwojnar.nameageapp.common.validator.SearchValidator;
+import com.janwojnar.nameageapp.communication.to.ApiAgifyResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -13,8 +15,18 @@ import static org.junit.jupiter.api.Assertions.*;
 class SearchValidatorTest {
     SearchValidator searchValidator = new SearchValidator();
 
+    private static Stream<Character> notRecognizableCharacters() {
+        return Stream.of('x', 'y', 'z', null);
+    }
+
+    private static Stream<ApiAgifyResponse> agifyResponseTypes() {
+        return Stream.of(
+                ApiAgifyResponse.builder().name("Stan").age(20).build(),
+                ApiAgifyResponse.builder().name("asfdasfdasdf").age(null).build());
+    }
+
     @Test
-    void validateNameShouldReturnTrueWithCorrectName(){
+    void validateNameShouldReturnTrueWithCorrectName() {
         //given
         String correctName = "Grażyna";
         //when
@@ -24,7 +36,7 @@ class SearchValidatorTest {
     }
 
     @Test
-    void validateNameShouldReturnFalseWithForbiddenName(){
+    void validateNameShouldReturnFalseWithForbiddenName() {
         //given
         String incorrectName = "Jac8675(&*)(*ek";
         //when
@@ -34,7 +46,7 @@ class SearchValidatorTest {
     }
 
     @ParameterizedTest
-    @ValueSource(chars ={'a','A','n','N'})
+    @ValueSource(chars = {'a', 'A', 'n', 'N'})
     void validateSearchHistoryEndpointInputWithSortingAndCorrectChars(char input) throws IllegalAccessException {
         //given
         //when
@@ -58,14 +70,20 @@ class SearchValidatorTest {
     void validateSearchHistoryEndpointInputWithSortingAndBadChars(Character input) {
         //given
         //when
-        IllegalAccessException exception = assertThrows(IllegalAccessException.class, () -> {
-            this.searchValidator.validateSearchHistoryEndpointInput(true, input);
-        });
+        IllegalAccessException exception = assertThrows(IllegalAccessException.class,
+                () -> this.searchValidator.validateSearchHistoryEndpointInput(true, input));
         //then
         assertEquals("SortTyp was not recognized!", exception.getMessage());
     }
 
-    private static Stream<Character> notRecognizableCharacters() {
-        return Stream.of( 'x', 'y', 'z', null);
+    @ParameterizedTest
+    @MethodSource("agifyResponseTypes")
+    void isNameRecognizedByAgify(ApiAgifyResponse response) {
+        //given
+        //when
+        //then
+        assertEquals(response.getAge() != null, this.searchValidator.isNameRecognisedByAgify(response));
     }
+
+
 }

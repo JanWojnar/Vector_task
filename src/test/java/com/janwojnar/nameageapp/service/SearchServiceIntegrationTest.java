@@ -1,14 +1,14 @@
-package com.janwojnar.nameageapp.core;
+package com.janwojnar.nameageapp.service;
 
 import com.janwojnar.nameageapp.common.LogPreparer;
 import com.janwojnar.nameageapp.common.exception.BusinessLogicException;
+import com.janwojnar.nameageapp.communication.adapter.ApiAgifyAdapter;
+import com.janwojnar.nameageapp.communication.to.ApiAgifyResponse;
+import com.janwojnar.nameageapp.communication.to.SearchHistoryTo;
 import com.janwojnar.nameageapp.persistance.config.DatabaseConfigurationProperties;
 import com.janwojnar.nameageapp.persistance.dao.SearchHistoryDao;
 import com.janwojnar.nameageapp.persistance.entity.SearchHistoryEty;
 import com.janwojnar.nameageapp.test.TestDatabaseManager;
-import com.janwojnar.nameageapp.web.adapter.ApiAgifyAdapter;
-import com.janwojnar.nameageapp.web.to.ApiAgifyResponse;
-import com.janwojnar.nameageapp.web.to.SearchHistoryTo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,12 +27,12 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ActiveProfiles(profiles = "test")
-class SearchUseCaseIntegrationTest {
+class SearchServiceIntegrationTest {
 
     private static final String NAME_NOT_FOUND = "notfoundname";
 
     @Autowired
-    SearchUseCase searchUseCase;
+    SearchService searchService;
 
     @Autowired
     SearchHistoryDao searchHistoryDao;
@@ -57,12 +57,13 @@ class SearchUseCaseIntegrationTest {
     void searchForNameDataTest() throws IOException, InterruptedException {
         //given
         List<String> mixedNames = List.of("Alina", "Halina", "Celina", "Grażyna", NAME_NOT_FOUND);
-        List<String> expectedNames = mixedNames.stream().filter(name -> !name.equals(NAME_NOT_FOUND)).toList();
+        List<String> expectedNames =
+                mixedNames.stream().filter(name -> !name.equals(NAME_NOT_FOUND)).map(String::toLowerCase).toList();
         mockAgifyApiResponse(mixedNames);
 
         //when
         for (String name : mixedNames) {
-            this.searchUseCase.searchForNameData(name);
+            this.searchService.searchForNameData(name);
         }
         Set<SearchHistoryEty> savedRecords = this.searchHistoryDao.read();
 
@@ -93,7 +94,7 @@ class SearchUseCaseIntegrationTest {
         List<SearchHistoryEty> dataDirectFromDatabase = this.searchHistoryDao.read().stream().toList();
         //when
         List<SearchHistoryTo> searchHistoryList =
-                this.searchUseCase.getSearchHistory(false, null).getSearchHistoryList();
+                this.searchService.getSearchHistory(false, null).getSearchHistoryList();
         //then
         assertEquals(dataDirectFromDatabase.size(), searchHistoryList.size());
         assertAll(
@@ -108,7 +109,7 @@ class SearchUseCaseIntegrationTest {
         TestDatabaseManager.populateDatabase(this.databaseConfigurationProperties.getPath());
         List<SearchHistoryEty> dataDirectFromDatabase = this.searchHistoryDao.read().stream().toList();
         //when
-        List<SearchHistoryTo> searchHistoryList = this.searchUseCase.getSearchHistory(true, 'A').getSearchHistoryList();
+        List<SearchHistoryTo> searchHistoryList = this.searchService.getSearchHistory(true, 'A').getSearchHistoryList();
         //then
         assertAll(
                 () -> assertEquals(dataDirectFromDatabase.size(), searchHistoryList.size()),
@@ -122,7 +123,7 @@ class SearchUseCaseIntegrationTest {
         TestDatabaseManager.populateDatabase(this.databaseConfigurationProperties.getPath());
         List<SearchHistoryEty> dataDirectFromDatabase = this.searchHistoryDao.read().stream().toList();
         //when
-        List<SearchHistoryTo> searchHistoryList = this.searchUseCase.getSearchHistory(true, 'N').getSearchHistoryList();
+        List<SearchHistoryTo> searchHistoryList = this.searchService.getSearchHistory(true, 'N').getSearchHistoryList();
         //then
         assertAll(
                 () -> assertEquals(dataDirectFromDatabase.size(), searchHistoryList.size()),
@@ -131,29 +132,27 @@ class SearchUseCaseIntegrationTest {
     }
 
     @Test
-    void getSearchHistoryIntegrationTestWithUnknownSortingTyp() throws IOException, InterruptedException {
+    void getSearchHistoryIntegrationTestWithUnknownSortingTypShouldThrowException() {
         //given
         TestDatabaseManager.populateDatabase(this.databaseConfigurationProperties.getPath());
-        List<SearchHistoryEty> dataDirectFromDatabase = this.searchHistoryDao.read().stream().toList();
         //when
         BusinessLogicException exception = assertThrows(BusinessLogicException.class,
-                () -> this.searchUseCase.getSearchHistory(true, 'X').getSearchHistoryList());
+                () -> this.searchService.getSearchHistory(true, 'X').getSearchHistoryList());
         //then
         assertEquals("[Given parameter 'sortTyp' was not recognized! Available: 'a' (age) and 'n' (name)]",
                 exception.getMessage());
     }
 
     @Test
-    void searchForNameDataWithForbiddenName() throws IOException, InterruptedException {
+    void searchForNameDataWithForbiddenNameShouldThrowException() throws IOException, InterruptedException {
         //given
         TestDatabaseManager.populateDatabase(this.databaseConfigurationProperties.getPath());
-        List<SearchHistoryEty> dataDirectFromDatabase = this.searchHistoryDao.read().stream().toList();
         String nameWithSpecialSigns = "Arczix&^%4$";
         String expectedExceptionMessage = LogPreparer.prepareLog("[", "Given name: ", nameWithSpecialSigns, " has " +
                 "forbidden special signs!]");
         //when
         BusinessLogicException exception = assertThrows(BusinessLogicException.class,
-                () -> this.searchUseCase.searchForNameData("Arczix&^%4$"));
+                () -> this.searchService.searchForNameData("Arczix&^%4$"));
         //then
         assertEquals(expectedExceptionMessage,
                 exception.getMessage());

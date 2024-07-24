@@ -5,6 +5,9 @@ import lombok.Getter;
 
 import java.util.Set;
 
+/**
+ * Collection of error messages.
+ */
 @Builder
 @Getter
 public class ErrorStatus {

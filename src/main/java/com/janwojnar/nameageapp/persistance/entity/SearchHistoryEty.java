@@ -1,14 +1,18 @@
 package com.janwojnar.nameageapp.persistance.entity;
 
-import com.janwojnar.nameageapp.web.to.ApiAgifyResponse;
-import com.janwojnar.nameageapp.web.to.SearchHistoryTo;
+import com.janwojnar.nameageapp.communication.to.ApiAgifyResponse;
+import com.janwojnar.nameageapp.communication.to.SearchHistoryTo;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.Objects;
 
+/**
+ * Representation of 'entity' that is saved/read from text 'database'.
+ */
 @Data
 @Builder
 @AllArgsConstructor
@@ -20,7 +24,7 @@ public class SearchHistoryEty implements Serializable {
     private Integer age;
 
     public static SearchHistoryEty of(ApiAgifyResponse apiAgifyResponse) {
-        return SearchHistoryEty.builder().name(apiAgifyResponse.getName()).age(apiAgifyResponse.getAge()).build();
+        return SearchHistoryEty.builder().name(apiAgifyResponse.getName().toLowerCase()).age(apiAgifyResponse.getAge()).build();
     }
 
     public SearchHistoryTo toTransferObject() {
@@ -37,5 +41,10 @@ public class SearchHistoryEty implements Serializable {
         }
         SearchHistoryEty other = (SearchHistoryEty) obj;
         return this.name.equals(other.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.age, this.name);
     }
 }

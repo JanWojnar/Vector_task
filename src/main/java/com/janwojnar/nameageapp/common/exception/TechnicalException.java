@@ -4,6 +4,9 @@ import com.janwojnar.nameageapp.common.ErrorStatus;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+/**
+ * Technical exception.
+ */
 @Getter
 public class TechnicalException extends RuntimeException {
 

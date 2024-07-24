@@ -1,9 +1,12 @@
-package com.janwojnar.nameageapp.web.to;
+package com.janwojnar.nameageapp.communication.to;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * Agify API Response object.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @Builder

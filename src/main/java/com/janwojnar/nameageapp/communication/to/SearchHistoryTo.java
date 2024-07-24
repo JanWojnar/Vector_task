@@ -1,9 +1,11 @@
-package com.janwojnar.nameageapp.web.to;
+package com.janwojnar.nameageapp.communication.to;
 
-import com.janwojnar.nameageapp.persistance.entity.SearchHistoryEty;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * Transfer object with one record of search history.
+ */
 @Data
 @Builder
 public class SearchHistoryTo {
