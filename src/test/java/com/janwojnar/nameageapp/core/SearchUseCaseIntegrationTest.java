@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ActiveProfiles(profiles = "test")
-class SearchUseCaseTest {
+class SearchUseCaseIntegrationTest {
 
     private static final String NAME_NOT_FOUND = "notfoundname";
 
@@ -158,7 +158,6 @@ class SearchUseCaseTest {
         assertEquals(expectedExceptionMessage,
                 exception.getMessage());
     }
-
 
     private boolean isSortedByAge(List<SearchHistoryTo> list) {
         for (int i = 0; i < list.size() - 1; i++) {
