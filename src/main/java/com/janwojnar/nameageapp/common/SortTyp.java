@@ -11,10 +11,12 @@ public enum SortTyp {
     }
 
     public static SortTyp of(Character c) throws IllegalAccessException {
-        c = Character.toLowerCase(c);
-        for (SortTyp sortTyp : values()) {
-            if (sortTyp.typ == c) {
-                return sortTyp;
+        if(c!=null){
+            c = Character.toLowerCase(c);
+            for (SortTyp sortTyp : values()) {
+                if (sortTyp.typ == c) {
+                    return sortTyp;
+                }
             }
         }
         throw new IllegalAccessException("SortTyp was not recognized!");

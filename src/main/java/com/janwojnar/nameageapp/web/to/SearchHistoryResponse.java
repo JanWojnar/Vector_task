@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 @Builder
 public class SearchHistoryResponse {
-    private List<SearchHistoryTo> searchHistorySet;
+    private List<SearchHistoryTo> searchHistoryList;
 }

@@ -1,0 +1,8 @@
+{"name":"Ola","age":22}
+{"name":"Trola","age":12}
+{"name":"Zola","age":6}
+{"name":"Kola","age":100}
+{"name":"Dwola","age":35}
+{"name":"Gola","age":12}
+{"name":"Ola","age":45}
+{"name":"Kasia","age":27}

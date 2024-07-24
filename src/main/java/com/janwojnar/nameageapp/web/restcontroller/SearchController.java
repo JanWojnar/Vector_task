@@ -1,5 +1,6 @@
 package com.janwojnar.nameageapp.web.restcontroller;
 
+import com.janwojnar.nameageapp.common.LogPreparer;
 import com.janwojnar.nameageapp.core.SearchUseCase;
 import com.janwojnar.nameageapp.web.to.ApiAgifyResponse;
 import com.janwojnar.nameageapp.web.to.SearchHistoryResponse;
@@ -22,7 +23,7 @@ public class SearchController {
     public ResponseEntity<Object> searchForNameData(@PathVariable String askedName) throws IOException,
             InterruptedException {
 
-        log.debug(prepareLog("Incoming REST request on method 'searchForNameData' with variable: name=", askedName));
+        log.debug(LogPreparer.prepareLog("Incoming REST request on method 'searchForNameData' with variable: name=", askedName));
 
         ApiAgifyResponse apiAgifyResponse = this.searchUseCase.searchForNameData(askedName);
         return ResponseEntity.ok(apiAgifyResponse);
@@ -32,18 +33,10 @@ public class SearchController {
     public ResponseEntity<Object> getSearchHistory(@PathVariable Boolean sorted, @RequestParam(value = "sortTyp",
             required = false) Character typ) {
 
-        log.debug(prepareLog("Incoming REST request on method 'getSearchHistory' with variable: sorted=",
+        log.debug(LogPreparer.prepareLog("Incoming REST request on method 'getSearchHistory' with variable: sorted=",
                 sorted.toString(), ", params: sortTyp=", typ));
 
         SearchHistoryResponse searchHistory = this.searchUseCase.getSearchHistory(sorted, typ);
         return ResponseEntity.ok(searchHistory);
-    }
-
-    private String prepareLog(Object... messages) {
-        StringBuilder sb = new StringBuilder();
-        for (Object message : messages) {
-            sb.append(message);
-        }
-        return sb.toString();
     }
 }

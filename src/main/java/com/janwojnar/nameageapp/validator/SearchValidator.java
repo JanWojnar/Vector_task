@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class SearchValidator {
 
-    private final String justLettersRegex = "^[a-zA-Z]+$";
+    private final String justLettersRegex = "^[\\p{L}]+$";
 
     public boolean validateName(String askedName) {
         log.debug("Validation of name: " + askedName);
-        return askedName.matches(justLettersRegex);
+        return askedName.matches(this.justLettersRegex);
     }
 
     public SortTyp validateSearchHistoryEndpointInput(Boolean sorted, Character typ) throws IllegalAccessException {

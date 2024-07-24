@@ -1,6 +1,7 @@
 package com.janwojnar.nameageapp.core;
 
 import com.janwojnar.nameageapp.common.ErrorStatus;
+import com.janwojnar.nameageapp.common.LogPreparer;
 import com.janwojnar.nameageapp.common.SortTyp;
 import com.janwojnar.nameageapp.common.exception.BusinessLogicException;
 import com.janwojnar.nameageapp.common.exception.TechnicalException;
@@ -12,6 +13,7 @@ import com.janwojnar.nameageapp.web.to.ApiAgifyResponse;
 import com.janwojnar.nameageapp.web.to.SearchHistoryResponse;
 import com.janwojnar.nameageapp.web.to.SearchHistoryTo;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class SearchUseCase {
 
     private final SearchValidator searchValidator;
@@ -32,14 +35,18 @@ public class SearchUseCase {
     public ApiAgifyResponse searchForNameData(String askedName) throws IOException, InterruptedException {
         validateName(askedName);
         ApiAgifyResponse nameData = this.apiAgifyService.getNameData(askedName);
-        this.searchHistoryDao.addRecord(nameData);
+        if(nameData.getAge() != null){
+            this.searchHistoryDao.addRecord(nameData);
+        } else {
+            log.warn(LogPreparer.prepareLog("Name was not recognized by external API and will not be saved in search history!"));
+        }
         return nameData;
     }
 
     private void validateName(String askedName) {
         if (!this.searchValidator.validateName(askedName)) {
             throw new BusinessLogicException(HttpStatus.BAD_REQUEST, ErrorStatus.builder().errorMessages(Set.of(
-                    "Given name has forbidden special signs!")).build());
+                    LogPreparer.prepareLog("Given name: ",askedName," has forbidden special signs!"))).build());
         }
     }
 
@@ -47,19 +54,20 @@ public class SearchUseCase {
         SortTyp sortTyp = validateSearchHistoryEndpointInput(sorted, typ);
         List<SearchHistoryTo> records = getSearchHistoryData();
         sortIfNeccessary(sorted, sortTyp, records);
-        return SearchHistoryResponse.builder().searchHistorySet(records).build();
+        return SearchHistoryResponse.builder().searchHistoryList(records).build();
     }
 
     private SortTyp validateSearchHistoryEndpointInput(Boolean sorted, Character typ) {
-        SortTyp sortTyp;
-        try {
-            sortTyp = this.searchValidator.validateSearchHistoryEndpointInput(sorted, typ);
-        } catch (IllegalAccessException e) {
-            throw new BusinessLogicException(HttpStatus.BAD_REQUEST, ErrorStatus.builder().errorMessages
-                    (Set.of(
-                            "Given parameter 'sortTyp' was not recognized! Available: 'a' (age) and 'n' (name)")).build());
+        if(sorted){
+            try {
+                return this.searchValidator.validateSearchHistoryEndpointInput(sorted, typ);
+            } catch (IllegalAccessException e) {
+                throw new BusinessLogicException(HttpStatus.BAD_REQUEST, ErrorStatus.builder().errorMessages
+                        (Set.of(
+                                "Given parameter 'sortTyp' was not recognized! Available: 'a' (age) and 'n' (name)")).build());
+            }
         }
-        return sortTyp;
+        return null;
     }
 
     private List<SearchHistoryTo> getSearchHistoryData() {

@@ -17,7 +17,7 @@ public class SearchHistoryEty implements Serializable {
 
     private String name;
 
-    private int age;
+    private Integer age;
 
     public static SearchHistoryEty of(ApiAgifyResponse apiAgifyResponse) {
         return SearchHistoryEty.builder().name(apiAgifyResponse.getName()).age(apiAgifyResponse.getAge()).build();
