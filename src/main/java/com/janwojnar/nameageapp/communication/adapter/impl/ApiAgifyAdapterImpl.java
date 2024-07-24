@@ -17,8 +17,8 @@ import java.util.Map;
 @Slf4j
 public class ApiAgifyAdapterImpl implements ApiAgifyAdapter {
 
-    private static final String NAME_AGE_ENDPOINT = "/?name={askedName}";
-    
+    private static final String NAME_AGE_ENDPOINT = "/?name={name}";
+
     private static final String BASE_URL = "https://api.agify.io";
 
     private final RestTemplate restTemplate;

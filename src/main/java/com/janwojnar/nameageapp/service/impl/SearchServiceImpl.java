@@ -59,10 +59,10 @@ public class SearchServiceImpl implements SearchService {
         }
     }
 
-    private void validateName(String askedName) {
-        if (!this.searchValidator.validateName(askedName)) {
+    private void validateName(String name) {
+        if (!this.searchValidator.validateName(name)) {
             throw new BusinessLogicException(HttpStatus.BAD_REQUEST, ErrorStatus.builder().errorMessages(Set.of(
-                    LogPreparer.prepareLog("Given name: ", askedName, " has forbidden special signs!"))).build());
+                    LogPreparer.prepareLog("Given name: ", name, " has forbidden special signs!"))).build());
         }
     }
 

@@ -1,0 +1,155 @@
+{
+	"info": {
+		"_postman_id": "e9d15353-405f-43c0-84cd-9374ebbdc3c9",
+		"name": "nameAgeApp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "20523557"
+	},
+	"item": [
+		{
+			"name": "exampleGetToAgify",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "magda",
+							"type": "text"
+						}
+					]
+				},
+				"url": "https://api.agify.io"
+			},
+			"response": []
+		},
+		{
+			"name": "searchForNameData successful",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": "http://localhost:8080/nameAgeApp/rest/searchForNameData/AS"
+			},
+			"response": []
+		},
+		{
+			"name": "searchForNameData forbidden sign",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": "http://localhost:8080/nameAgeApp/rest/searchForNameData/AS"
+			},
+			"response": []
+		},
+		{
+			"name": "searchHistory sorted by age",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/nameAgeApp/rest/searchHistory/sorted/true?sortTyp=A",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nameAgeApp",
+						"rest",
+						"searchHistory",
+						"sorted",
+						"true"
+					],
+					"query": [
+						{
+							"key": "sortTyp",
+							"value": "A",
+							"description": "Char of sorting type (a/A - by age,  n/N - by name)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "searchHistory sorted by name",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/nameAgeApp/rest/searchHistory/sorted/true?sortTyp=A",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nameAgeApp",
+						"rest",
+						"searchHistory",
+						"sorted",
+						"true"
+					],
+					"query": [
+						{
+							"key": "sortTyp",
+							"value": "A",
+							"description": "Char of sorting type (a/A - by age,  n/N - by name)"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "searchHistory unsorted",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/nameAgeApp/rest/searchHistory/sorted/false",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"nameAgeApp",
+						"rest",
+						"searchHistory",
+						"sorted",
+						"false"
+					],
+					"query": [
+						{
+							"key": "sortTyp",
+							"value": "A",
+							"description": "Char of sorting type (a/A - by age,  n/N - by name)",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

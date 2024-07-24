@@ -17,12 +17,12 @@ public class SearchValidator {
     /**
      * Validates name with 'justLettersRegex'.
      *
-     * @param askedName validated name.
+     * @param name validated name.
      * @return validation outcome.
      */
-    public boolean validateName(String askedName) {
-        log.debug("Validation of name: " + askedName);
-        return askedName.matches(this.justLettersRegex);
+    public boolean validateName(String name) {
+        log.debug("Validation of name: " + name);
+        return name.matches(this.justLettersRegex);
     }
 
     /**
